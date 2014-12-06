@@ -1,0 +1,4 @@
+rootProject.name = 'playground-app'
+
+include 'playground-app-ejb'
+include 'playground-app-web'

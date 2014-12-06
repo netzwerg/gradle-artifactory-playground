@@ -1,0 +1,58 @@
+plugins {
+    id "com.jfrog.artifactory" version "3.0.1"
+}
+
+apply plugin: 'java'
+apply plugin: 'maven' // to install in local maven repo
+apply plugin: 'maven-publish' // to define publications for artifactory
+
+group = 'ch.netzwerg'
+version = '0.1'
+
+repositories {
+    maven {
+        url 'http://localhost:8081/artifactory/repo'
+        credentials {
+            username "${artifactory_user}"
+            password "${artifactory_password}"
+        }
+        mavenLocal()
+    }
+}
+
+dependencies {
+    // arbitrary --> verify resolution of transitive dependencies
+    compile 'com.google.guava:guava:18.0'
+}
+
+artifactory {
+    contextUrl = "${artifactory_contextUrl}"
+    publish {
+        repository {
+            repoKey = 'libs-release-local'
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
+            maven = true
+        }
+        defaults {
+            publications('mavenJava')
+        }
+    }
+    resolve {
+        repository {
+            repoKey = 'libs-release'
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
+            maven = true
+
+        }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}

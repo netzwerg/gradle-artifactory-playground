@@ -1,0 +1,13 @@
+apply plugin: 'war'
+
+dependencies {
+    compile project(':playground-app-ejb')
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.web
+        }
+    }
+}

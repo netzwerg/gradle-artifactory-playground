@@ -1,4 +1,3 @@
-artifactory-playground
-======================
-
-Gradle/Artifactory setup for combination of util library + multi-module JEE project
+Demonstrates a Gradle/Artifactory build setup:
+* `playground-util-lib`: A utility library, use `./gradlew artifactoryPublish` to upload to repo
+* `playground-app`: A multi-module JEE app which depends on the utility library

@@ -1,0 +1,63 @@
+// need to use old plugin syntax if applied in root project
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1'
+    }
+}
+
+allprojects {
+
+    apply plugin: 'java'
+    apply plugin: "com.jfrog.artifactory"
+    apply plugin: 'maven' // to install in local maven repo
+    apply plugin: 'maven-publish' // to define publications for artifactory
+
+    group = 'ch.netzwerg'
+    version = '0.1'
+
+    // resolving dependencies
+    repositories {
+        maven {
+            url 'http://localhost:8081/artifactory/repo'
+            credentials {
+                username "${artifactory_user}"
+                password "${artifactory_password}"
+            }
+        }
+        mavenLocal()
+    }
+
+    dependencies {
+        compile 'javax:javaee-api:7.0'
+        compile 'ch.netzwerg:playground-util-lib:0.1'
+    }
+
+    // publishing artifacts
+    artifactory {
+        contextUrl = "${artifactory_contextUrl}"
+        publish {
+            repository {
+                repoKey = 'libs-release-local'
+                username = "${artifactory_user}"
+                password = "${artifactory_password}"
+                maven = true
+            }
+            defaults {
+                publications('mavenJava')
+            }
+        }
+        resolve {
+            repository {
+                repoKey = 'libs-release'
+                username = "${artifactory_user}"
+                password = "${artifactory_password}"
+                maven = true
+
+            }
+        }
+    }
+
+}
